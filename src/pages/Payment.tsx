@@ -5,7 +5,7 @@ import { CreditCard, Calendar, Lock, Check } from 'lucide-react';
 const Payment: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { flight, passengers, bookingData, selectedServices, selectedSeat } = location.state || {};
+  const { flight, passengers, passengerDetails, searchData, totalPrice: passedTotalPrice, purchaseId, purchase, selectedServices, selectedSeat } = location.state || {};
 
   const [paymentData, setPaymentData] = useState({
     cardNumber: '',
@@ -17,11 +17,12 @@ const Payment: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const calculateTotal = () => {
-    const flightPrice = flight?.price || 0;
+    // Use the passed total price or calculate from flight price
+    const flightPrice = passedTotalPrice || (flight?.precio ? parseFloat(flight.precio) : 0);
     const servicesPrice = selectedServices?.reduce((total: number, service: any) => total + (service?.price || 0), 0) || 0;
     const seatPrice = (selectedSeat?.startsWith('1') || selectedSeat?.startsWith('2') || selectedSeat?.startsWith('3')) ? 50000 : 0;
     
-    return flightPrice + servicesPrice + seatPrice;
+    return (passedTotalPrice || flightPrice) + servicesPrice + seatPrice;
   };
 
   const handlePayment = async () => {
@@ -40,7 +41,10 @@ const Payment: React.FC = () => {
         bookingReference,
         flight,
         passengers,
-        bookingData,
+        passengerDetails,
+        searchData,
+        purchaseId,
+        purchase,
         selectedServices,
         selectedSeat,
         totalAmount: calculateTotal()
@@ -168,21 +172,21 @@ const Payment: React.FC = () => {
               <div className="space-y-4">
                 <div className="pb-4 border-b">
                   <h4 className="font-semibold mb-2">Detalles del Vuelo</h4>
-                  <p className="text-sm text-gray-600">{flight?.origin} → {flight?.destination}</p>
-                  <p className="text-sm text-gray-600">{flight?.departureDate} - {flight?.departureTime}</p>
+                  <p className="text-sm text-gray-600">{flight?.origen || flight?.origin} → {flight?.destino || flight?.destination}</p>
+                  <p className="text-sm text-gray-600">{flight?.fecha_salida ? new Date(flight.fecha_salida).toLocaleDateString() : flight?.departureDate} - {flight?.fecha_salida ? new Date(flight.fecha_salida).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : flight?.departureTime}</p>
                   <p className="text-sm text-gray-600">Asiento: {selectedSeat}</p>
                 </div>
 
                 <div className="pb-4 border-b">
                   <h4 className="font-semibold mb-2">Pasajero</h4>
-                  <p className="text-sm text-gray-600">{bookingData?.firstName} {bookingData?.lastName}</p>
-                  <p className="text-sm text-gray-600">{bookingData?.email}</p>
+                  <p className="text-sm text-gray-600">{passengerDetails?.[0]?.firstName} {passengerDetails?.[0]?.lastName}</p>
+                  <p className="text-sm text-gray-600">{passengerDetails?.[0]?.email}</p>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Vuelo base:</span>
-                    <span>${(flight?.price || 0).toLocaleString()} COP</span>
+                    <span>${(passedTotalPrice || (flight?.precio ? parseFloat(flight.precio) : 0)).toLocaleString()} COP</span>
                   </div>
                   
                   {selectedServices && selectedServices.length > 0 && (

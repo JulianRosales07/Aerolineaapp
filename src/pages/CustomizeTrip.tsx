@@ -5,7 +5,7 @@ import { Check } from 'lucide-react';
 const CustomizeTrip: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { flight, passengers, bookingData } = location.state || {};
+  const { flight, passengers, passengerDetails, searchData, totalPrice, purchaseId, purchase } = location.state || {};
 
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
@@ -71,7 +71,11 @@ const CustomizeTrip: React.FC = () => {
       state: {
         flight,
         passengers,
-        bookingData,
+        passengerDetails,
+        searchData,
+        totalPrice,
+        purchaseId,
+        purchase,
         selectedServices: customizedServices
       }
     });
@@ -178,8 +182,8 @@ const CustomizeTrip: React.FC = () => {
               
               <div className="mt-6 text-sm text-gray-500">
                 <p className="font-medium mb-2">Pasajero:</p>
-                <p>{bookingData?.firstName} {bookingData?.lastName}</p>
-                <p>{bookingData?.email}</p>
+                <p>{passengerDetails?.[0]?.firstName} {passengerDetails?.[0]?.lastName}</p>
+                <p>{passengerDetails?.[0]?.email}</p>
               </div>
             </div>
           </div>
