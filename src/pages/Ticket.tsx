@@ -14,21 +14,21 @@ const Ticket: React.FC = () => {
   const {
     bookingReference = `AC${Date.now().toString().slice(-6)}`,
     flight = {
-      origin: 'BOG',
-      destination: 'MDE',
+      origen: 'BOG',
+      destino: 'MDE',
       departureTime: '08:00',
       arrivalTime: '09:15',
       departureDate: new Date().toISOString().split('T')[0],
       duration: '1h 15m',
       aircraft: 'Boeing 737'
     },
-    bookingData = {
+    passengerDetails = [{
       firstName: 'Juan',
       lastName: 'Pérez',
       email: 'juan@email.com',
       phone: '+57 300 123 4567',
       nationality: 'Colombiana'
-    },
+    }],
     selectedSeat = '12F',
     selectedServices = [],
     totalAmount = 180000
@@ -48,7 +48,7 @@ const Ticket: React.FC = () => {
       const ticketData = {
         bookingReference,
         flight,
-        bookingData,
+        passengerDetails,
         selectedSeat,
         selectedServices,
         totalAmount,
@@ -139,9 +139,19 @@ const Ticket: React.FC = () => {
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-1">{flight?.departureTime}</div>
-                <div className="text-gray-600">{flight?.origin}</div>
-                <div className="text-sm text-gray-500">{flight?.departureDate}</div>
+                <div className="text-3xl font-bold mb-1">
+                  {flight?.fecha_salida ? 
+                    new Date(flight.fecha_salida).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : 
+                    flight?.departureTime
+                  }
+                </div>
+                <div className="text-gray-600">{flight?.origen || flight?.origin}</div>
+                <div className="text-sm text-gray-500">
+                  {flight?.fecha_salida ? 
+                    new Date(flight.fecha_salida).toLocaleDateString('es-CO') : 
+                    flight?.departureDate
+                  }
+                </div>
               </div>
               
               <div className="text-center">
@@ -155,9 +165,19 @@ const Ticket: React.FC = () => {
               </div>
               
               <div className="text-center">
-                <div className="text-3xl font-bold mb-1">{flight?.arrivalTime}</div>
-                <div className="text-gray-600">{flight?.destination}</div>
-                <div className="text-sm text-gray-500">{flight?.departureDate}</div>
+                <div className="text-3xl font-bold mb-1">
+                  {flight?.fecha_regreso ? 
+                    new Date(flight.fecha_regreso).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : 
+                    flight?.arrivalTime
+                  }
+                </div>
+                <div className="text-gray-600">{flight?.destino || flight?.destination}</div>
+                <div className="text-sm text-gray-500">
+                  {flight?.fecha_salida ? 
+                    new Date(flight.fecha_salida).toLocaleDateString('es-CO') : 
+                    flight?.departureDate
+                  }
+                </div>
               </div>
             </div>
 
@@ -169,10 +189,10 @@ const Ticket: React.FC = () => {
                   Información del Pasajero
                 </h3>
                 <div className="space-y-2 text-sm">
-                  <div><strong>Nombre:</strong> {bookingData?.firstName} {bookingData?.lastName}</div>
-                  <div><strong>Email:</strong> {bookingData?.email}</div>
-                  <div><strong>Teléfono:</strong> {bookingData?.phone}</div>
-                  <div><strong>Nacionalidad:</strong> {bookingData?.nationality}</div>
+                  <div><strong>Nombre:</strong> {passengerDetails?.[0]?.firstName} {passengerDetails?.[0]?.lastName}</div>
+                  <div><strong>Email:</strong> {passengerDetails?.[0]?.email}</div>
+                  <div><strong>Teléfono:</strong> {passengerDetails?.[0]?.phone}</div>
+                  <div><strong>Nacionalidad:</strong> {passengerDetails?.[0]?.nationality}</div>
                 </div>
               </div>
 
@@ -182,6 +202,12 @@ const Ticket: React.FC = () => {
                   Detalles del Asiento
                 </h3>
                 <div className="space-y-2 text-sm">
+                  <div><strong>Fecha:</strong> 
+                    {flight?.fecha_salida ? 
+                      new Date(flight.fecha_salida).toLocaleDateString('es-CO') : 
+                      flight?.departureDate
+                    }
+                  </div>
                   <div><strong>Asiento:</strong> {selectedSeat}</div>
                   <div><strong>Clase:</strong> 
                     {(selectedSeat?.startsWith('1') || selectedSeat?.startsWith('2') || selectedSeat?.startsWith('3')) 

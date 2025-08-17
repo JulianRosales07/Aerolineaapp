@@ -3,7 +3,7 @@
 export interface TicketData {
   bookingReference: string;
   flight: any;
-  bookingData: any;
+  passengerDetails: any[];
   selectedSeat: string;
   selectedServices: any[];
   totalAmount: number;
@@ -13,7 +13,7 @@ export const generateTicketPDF = (ticketData: TicketData) => {
   const {
     bookingReference,
     flight,
-    bookingData,
+    passengerDetails,
     selectedSeat,
     selectedServices,
     totalAmount
@@ -237,10 +237,16 @@ export const generateTicketPDF = (ticketData: TicketData) => {
         <div class="content">
           <div class="flight-info">
             <div class="airport">
-              <div class="airport-code">${flight?.origin || 'BOG'}</div>
+              <div class="airport-code">${flight?.origen || flight?.origin || 'BOG'}</div>
               <div class="airport-name">Origen</div>
-              <div class="date-time">${flight?.departureTime || '08:00'}</div>
-              <div style="font-size: 14px; color: #64748b; margin-top: 5px;">${flight?.departureDate || '2024-02-15'}</div>
+              <div class="date-time">${flight?.fecha_salida ? 
+                new Date(flight.fecha_salida).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : 
+                flight?.departureTime || '08:00'
+              }</div>
+              <div style="font-size: 14px; color: #64748b; margin-top: 5px;">${flight?.fecha_salida ? 
+                new Date(flight.fecha_salida).toLocaleDateString('es-CO') : 
+                flight?.departureDate || '2024-02-15'
+              }</div>
             </div>
             
             <div class="flight-path">
@@ -253,10 +259,16 @@ export const generateTicketPDF = (ticketData: TicketData) => {
             </div>
             
             <div class="airport">
-              <div class="airport-code">${flight?.destination || 'MDE'}</div>
+              <div class="airport-code">${flight?.destino || flight?.destination || 'MDE'}</div>
               <div class="airport-name">Destino</div>
-              <div class="date-time">${flight?.arrivalTime || '09:15'}</div>
-              <div style="font-size: 14px; color: #64748b; margin-top: 5px;">${flight?.departureDate || '2024-02-15'}</div>
+              <div class="date-time">${flight?.fecha_regreso ? 
+                new Date(flight.fecha_regreso).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : 
+                flight?.arrivalTime || '09:15'
+              }</div>
+              <div style="font-size: 14px; color: #64748b; margin-top: 5px;">${flight?.fecha_salida ? 
+                new Date(flight.fecha_salida).toLocaleDateString('es-CO') : 
+                flight?.departureDate || '2024-02-15'
+              }</div>
             </div>
           </div>
           
@@ -265,19 +277,19 @@ export const generateTicketPDF = (ticketData: TicketData) => {
               <div class="detail-title">👤 Información del Pasajero</div>
               <div class="detail-item">
                 <span class="detail-label">Nombre:</span>
-                <span class="detail-value">${bookingData?.firstName || 'Juan'} ${bookingData?.lastName || 'Pérez'}</span>
+                <span class="detail-value">${passengerDetails?.[0]?.firstName || 'Juan'} ${passengerDetails?.[0]?.lastName || 'Pérez'}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Email:</span>
-                <span class="detail-value">${bookingData?.email || 'juan@email.com'}</span>
+                <span class="detail-value">${passengerDetails?.[0]?.email || 'juan@email.com'}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Teléfono:</span>
-                <span class="detail-value">${bookingData?.phone || '+57 300 123 4567'}</span>
+                <span class="detail-value">${passengerDetails?.[0]?.phone || '+57 300 123 4567'}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Nacionalidad:</span>
-                <span class="detail-value">${bookingData?.nationality || 'Colombiana'}</span>
+                <span class="detail-value">${passengerDetails?.[0]?.nationality || 'Colombiana'}</span>
               </div>
             </div>
             
@@ -285,7 +297,10 @@ export const generateTicketPDF = (ticketData: TicketData) => {
               <div class="detail-title">🎫 Detalles del Vuelo</div>
               <div class="detail-item">
                 <span class="detail-label">Fecha:</span>
-                <span class="detail-value">${flight?.departureDate || '2024-02-15'}</span>
+                <span class="detail-value">${flight?.fecha_salida ? 
+                  new Date(flight.fecha_salida).toLocaleDateString('es-CO') : 
+                  flight?.departureDate || '2024-02-15'
+                }</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Asiento:</span>
