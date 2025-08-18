@@ -21,7 +21,7 @@ const Navbar: React.FC = () => {
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center space-x-2">
               <Plane className="h-8 w-8 text-sky-500" />
-              <span className="text-xl font-bold text-gray-900">AeroColombiana</span>
+              <span className="text-xl font-bold text-gray-900">NovaAir</span>
             </Link>
 
             <div className="hidden md:flex items-center space-x-8">

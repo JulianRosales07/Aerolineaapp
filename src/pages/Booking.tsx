@@ -167,8 +167,8 @@ const Booking: React.FC = () => {
 
       console.log('Purchase created successfully:', purchaseResponse);
       
-      // Navigate to payment with purchase details
-      navigate('/payment', {
+      // Navigate to customize trip with purchase details
+      navigate('/customize-trip', {
         state: {
           flight,
           passengers,
@@ -182,9 +182,9 @@ const Booking: React.FC = () => {
     } catch (error) {
       console.error('Error creating booking:', error);
       
-      // For now, continue to payment even if API fails (for testing)
-      console.log('Continuing to payment despite API error for testing purposes');
-      navigate('/payment', {
+      // For now, continue to customize trip even if API fails (for testing)
+      console.log('Continuing to customize trip despite API error for testing purposes');
+      navigate('/customize-trip', {
         state: {
           flight,
           passengers,
@@ -432,8 +432,7 @@ const Booking: React.FC = () => {
             </>
           ) : (
             <>
-              <CreditCard className="h-5 w-5" />
-              <span>Continuar al pago</span>
+              <span>Personalizar viaje</span>
             </>
           )}
         </button>

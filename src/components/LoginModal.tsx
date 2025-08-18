@@ -83,10 +83,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           </button>
         </form>
 
-        <div className="mt-4 text-sm text-gray-600 text-center">
-          <p>Credenciales de prueba:</p>
-          <p>Usuario: admin | Contraseña: admin123</p>
-        </div>
+
       </div>
     </div>
   );

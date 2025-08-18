@@ -10,7 +10,7 @@ const Offers: React.FC = () => {
       price: 180000,
       originalPrice: 250000,
       discount: 28,
-      image: 'https://images.pexels.com/photos/1518623/pexels-photo-1518623.jpeg?auto=compress&cs=tinysrgb&w=800',
+      image: 'https://media.staticontent.com/media/pictures/9495889e-54f9-40d2-939d-b04bf30b47c7',
       description: 'Descubre la ciudad amurallada y sus playas paradisíacas',
       validUntil: '2024-03-15',
       features: ['Vuelo directo', 'Equipaje incluido', 'Snack gratis']
@@ -22,7 +22,7 @@ const Offers: React.FC = () => {
       price: 150000,
       originalPrice: 200000,
       discount: 25,
-      image: 'https://images.pexels.com/photos/2625122/pexels-photo-2625122.jpeg?auto=compress&cs=tinysrgb&w=800',
+      image: 'https://www.ciencuadras.com/blog/wp-content/uploads/2023/06/Medellin-barrios-principales-historia-inmuebles.jpg',
       description: 'La ciudad de la eterna primavera te espera',
       validUntil: '2024-03-20',
       features: ['Check-in gratis', 'Cambios flexibles', 'Wi-Fi gratis']
@@ -34,7 +34,7 @@ const Offers: React.FC = () => {
       price: 320000,
       originalPrice: 450000,
       discount: 29,
-      image: 'https://images.pexels.com/photos/1631677/pexels-photo-1631677.jpeg?auto=compress&cs=tinysrgb&w=800',
+      image: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/24/88/76/decameron-aquarium.jpg?w=600&h=400&s=1',
       description: 'El paraíso del Caribe colombiano',
       validUntil: '2024-04-01',
       features: ['Mar de 7 colores', 'Actividades incluidas', 'Resort partners']
@@ -42,10 +42,10 @@ const Offers: React.FC = () => {
   ];
 
   const popularDestinations = [
-    { city: 'Cali', code: 'CLO', price: 170000, image: 'https://images.pexels.com/photos/2896842/pexels-photo-2896842.jpeg?auto=compress&cs=tinysrgb&w=400' },
-    { city: 'Barranquilla', code: 'BAQ', price: 195000, image: 'https://images.pexels.com/photos/3889871/pexels-photo-3889871.jpeg?auto=compress&cs=tinysrgb&w=400' },
-    { city: 'Santa Marta', code: 'SMR', price: 210000, image: 'https://images.pexels.com/photos/2225617/pexels-photo-2225617.jpeg?auto=compress&cs=tinysrgb&w=400' },
-    { city: 'Pereira', code: 'PEI', price: 140000, image: 'https://images.pexels.com/photos/417054/pexels-photo-417054.jpeg?auto=compress&cs=tinysrgb&w=400' },
+    { city: 'Cali', code: 'CLO', price: 170000, image: 'https://i.ytimg.com/vi/41S-dcc-90Y/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDT3GgNL7Op2Zd2dCx03iAVUH6Q-A' },
+    { city: 'Barranquilla', code: 'BAQ', price: 195000, image: 'https://colombiaone.com/wp-content/uploads/2023/08/Window_World_Monument_Barranquilla_credit_PrimeroBarranquilla_-Facebook.jpg' },
+    { city: 'Santa Marta', code: 'SMR', price: 210000, image: 'https://www.ciencuadras.com/blog/wp-content/uploads/2023/01/760x501_Santa-Marta.jpg' },
+    { city: 'Pereira', code: 'PEI', price: 140000, image: 'https://www.elespectador.com/resizer/v2/2QCUCOLNWBEFVJ5Z6V4NBQKFH4.jpg?auth=3d21aea7cc28727527dc950736e09b1e7c5e224e95888f6ef7c4b45a3d761986&width=920&height=613&smart=true&quality=60' },
   ];
 
   return (

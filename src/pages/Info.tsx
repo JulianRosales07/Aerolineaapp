@@ -4,7 +4,7 @@ import { Phone, Mail, MapPin, Clock, Luggage, CreditCard, Shield, Users, FileTex
 const Info: React.FC = () => {
   const contactInfo = [
     { icon: Phone, label: 'Teléfono', value: '+57 1 800-AERO (2376)', available: '24/7' },
-    { icon: Mail, label: 'Email', value: 'info@aerocolombiana.com', available: 'Respuesta en 24h' },
+    { icon: Mail, label: 'Email', value: 'info@NovaAir.com', available: 'Respuesta en 24h' },
     { icon: MapPin, label: 'Oficina Principal', value: 'Aeropuerto El Dorado, Bogotá', available: 'Lun-Dom 5:00-23:00' }
   ];
 

@@ -3,6 +3,7 @@ import { Search, Users, Plane, Shield, Clock, Award } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import PassengerModal from '../components/PassengerModal';
 import { aeropuertosAPI } from '../services/api';
+import { tiquetesAPI } from '../services/tiquetesAPI';
 
 interface Airport {
   id: string;
@@ -75,10 +76,28 @@ const Home: React.FC = () => {
 
       setLoading(true);
       try {
-        navigate('/flights', { state: { searchData, passengers } });
+        // Build ticket payload (ajusta los campos al esquema real de tu API)
+        const ticketPayload = {
+          usuarioId: 1, // reemplaza con el id real del usuario si lo tienes
+          vueloId: null, // si ya tienes un vuelo seleccionado, pon su id aquí
+          fecha_creacion: new Date().toISOString(), // opcional, el backend puede generar esta fecha
+          fecha_viaje: searchData.departureDate,
+          origen: searchData.origin,
+          destino: searchData.destination,
+          equipaje: `${passengers.adults} adultos, ${passengers.youth} jóvenes, ${passengers.children} niños, ${passengers.infants} infantes`,
+          clase: 'Económica', // o escoger según la selección del usuario
+          cantidad_pasajeros: passengers.adults + passengers.youth + passengers.children + passengers.infants
+        };
+
+        // Enviar ticket al backend
+        const response = await tiquetesAPI.create(ticketPayload);
+        const savedTicket = response.data;
+
+        // Navegar a la página de resultados/pago pasando el ticket guardado
+        navigate('/flights', { state: { searchData, passengers, ticket: savedTicket } });
       } catch (error) {
-        console.error('Error navigating to flights:', error);
-        alert('Error al buscar vuelos. Por favor, intenta nuevamente.');
+        console.error('Error al guardar el ticket:', error);
+        alert('Error al guardar el ticket. Por favor intenta nuevamente.');
       } finally {
         setLoading(false);
       }
@@ -96,17 +115,17 @@ const Home: React.FC = () => {
     {
       title: 'Cartagena - El Caribe te espera',
       description: 'Vuelos desde $180.000 COP',
-      image: 'https://images.pexels.com/photos/1518623/pexels-photo-1518623.jpeg?auto=compress&cs=tinysrgb&w=400'
+      image: 'https://media.staticontent.com/media/pictures/9495889e-54f9-40d2-939d-b04bf30b47c7'
     },
     {
       title: 'Medellín - Ciudad de la Eterna Primavera',
       description: 'Vuelos desde $150.000 COP',
-      image: 'https://images.pexels.com/photos/2625122/pexels-photo-2625122.jpeg?auto=compress&cs=tinysrgb&w=400'
+      image: 'https://www.ciencuadras.com/blog/wp-content/uploads/2023/06/Medellin-barrios-principales-historia-inmuebles.jpg'
     },
     {
       title: 'San Andrés - Paraíso Colombiano',
       description: 'Vuelos desde $320.000 COP',
-      image: 'https://images.pexels.com/photos/1631677/pexels-photo-1631677.jpeg?auto=compress&cs=tinysrgb&w=400'
+      image: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/24/88/76/decameron-aquarium.jpg?w=600&h=400&s=1'
     }
   ];
 
@@ -120,7 +139,7 @@ const Home: React.FC = () => {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center text-white px-4">
             <h1 className="text-5xl md:text-6xl font-bold mb-4">
-              Vuela con <span className="text-sky-400">AeroColombiana</span>
+              Vuela con <span className="text-sky-400">NovaAir</span>
             </h1>
             <p className="text-xl md:text-2xl mb-8">Conectamos Colombia con el mundo</p>
           </div>

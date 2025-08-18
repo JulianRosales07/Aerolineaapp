@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const SeatSelection: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { flight, passengers, bookingData, selectedServices } = location.state || {};
+  const { flight, passengers, passengerDetails, searchData, totalPrice, purchaseId, purchase, selectedServices } = location.state || {};
 
   const [selectedSeat, setSelectedSeat] = useState<string>('');
 
@@ -51,7 +51,11 @@ const SeatSelection: React.FC = () => {
         state: {
           flight,
           passengers,
-          bookingData,
+          passengerDetails,
+          searchData,
+          totalPrice,
+          purchaseId,
+          purchase,
           selectedServices,
           selectedSeat
         }
@@ -187,7 +191,7 @@ const SeatSelection: React.FC = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Pasajero:</span>
-                  <span>{bookingData?.firstName} {bookingData?.lastName}</span>
+                  <span>{passengerDetails?.[0]?.firstName} {passengerDetails?.[0]?.lastName}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Hora:</span>

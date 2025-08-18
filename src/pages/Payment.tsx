@@ -5,7 +5,7 @@ import { CreditCard, Calendar, Lock, Check } from 'lucide-react';
 const Payment: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { flight, passengers, bookingData, selectedServices, selectedSeat } = location.state || {};
+  const { flight, passengers, passengerDetails, searchData, totalPrice: passedTotalPrice, purchaseId, purchase, selectedServices, selectedSeat } = location.state || {};
 
   const [paymentData, setPaymentData] = useState({
     cardNumber: '',
@@ -17,11 +17,13 @@ const Payment: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const calculateTotal = () => {
-    const flightPrice = flight?.price || 0;
-    const servicesPrice = selectedServices?.reduce((total: number, service: any) => total + (service?.price || 0), 0) || 0;
-    const seatPrice = (selectedSeat?.startsWith('1') || selectedSeat?.startsWith('2') || selectedSeat?.startsWith('3')) ? 50000 : 0;
-    
-    return flightPrice + servicesPrice + seatPrice;
+    const flightPrice = passedTotalPrice || (flight?.precio ? parseFloat(flight.precio) : 0);
+    const servicesPrice = Array.isArray(selectedServices)
+      ? selectedServices.reduce((total: number, service: any) => total + (Number(service?.price) || 0), 0)
+      : 0;
+    const seatPrice = (typeof selectedSeat === 'string' && /^[123]/.test(selectedSeat)) ? 50000 : 0;
+
+    return (passedTotalPrice || flightPrice) + servicesPrice + seatPrice;
   };
 
   const handlePayment = async () => {
@@ -40,7 +42,10 @@ const Payment: React.FC = () => {
         bookingReference,
         flight,
         passengers,
-        bookingData,
+        passengerDetails,
+        searchData,
+        purchaseId,
+        purchase,
         selectedServices,
         selectedSeat,
         totalAmount: calculateTotal()
@@ -164,47 +169,54 @@ const Payment: React.FC = () => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
               <h3 className="text-lg font-bold mb-4">Resumen de Compra</h3>
-              
+
               <div className="space-y-4">
                 <div className="pb-4 border-b">
                   <h4 className="font-semibold mb-2">Detalles del Vuelo</h4>
-                  <p className="text-sm text-gray-600">{flight?.origin} → {flight?.destination}</p>
-                  <p className="text-sm text-gray-600">{flight?.departureDate} - {flight?.departureTime}</p>
-                  <p className="text-sm text-gray-600">Asiento: {selectedSeat}</p>
+                  <p className="text-sm text-gray-600">{flight?.origen || flight?.origin || 'N/A'} → {flight?.destino || flight?.destination || 'N/A'}</p>
+                  <p className="text-sm text-gray-600">
+                    {flight?.fecha_salida ? new Date(flight.fecha_salida).toLocaleDateString() : (flight?.departureDate ?? 'N/A')}
+                    {' - '}
+                    {flight?.fecha_salida ? new Date(flight.fecha_salida).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : (flight?.departureTime ?? 'N/A')}
+                  </p>
+                  <p className="text-sm text-gray-600">Asiento: {selectedSeat ?? 'N/A'}</p>
                 </div>
 
                 <div className="pb-4 border-b">
                   <h4 className="font-semibold mb-2">Pasajero</h4>
-                  <p className="text-sm text-gray-600">{bookingData?.firstName} {bookingData?.lastName}</p>
-                  <p className="text-sm text-gray-600">{bookingData?.email}</p>
+                  <p className="text-sm text-gray-600">
+                    {passengerDetails?.[0]?.firstName ?? ''} {passengerDetails?.[0]?.lastName ?? ''}
+                  </p>
+                  <p className="text-sm text-gray-600">{passengerDetails?.[0]?.email ?? ''}</p>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Vuelo base:</span>
-                    <span>${(flight?.price || 0).toLocaleString()} COP</span>
+                    <span>${(passedTotalPrice || (flight?.precio ? parseFloat(flight.precio) : 0)).toLocaleString()} COP</span>
                   </div>
-                  
-                  {selectedServices && selectedServices.length > 0 && (
+
+                  {Array.isArray(selectedServices) && selectedServices.length > 0 && (
                     <div>
                       <div className="text-sm font-medium text-gray-700 mb-1">Servicios:</div>
                       {selectedServices.map((service: any, index: number) => (
-                        <div key={index} className="flex justify-between text-sm">
-                          <span className="text-gray-600">{service?.name || 'Servicio'}:</span>
-                          <span>${(service?.price || 0).toLocaleString()}</span>
+                        // use a stable key if possible
+                        <div key={service?.id ?? service?.name ?? `svc-${index}`} className="flex justify-between text-sm">
+                          <span className="text-gray-600">{service?.name ?? 'Servicio'}:</span>
+                          <span>${(Number(service?.price) || 0).toLocaleString()}</span>
                         </div>
                       ))}
                     </div>
                   )}
-                  
-                  {(selectedSeat?.startsWith('1') || selectedSeat?.startsWith('2') || selectedSeat?.startsWith('3')) && (
+
+                  {(typeof selectedSeat === 'string' && /^[123]/.test(selectedSeat)) && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Asiento Premium:</span>
                       <span>$50,000</span>
                     </div>
                   )}
                 </div>
-                
+
                 <div className="border-t pt-4">
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total:</span>
@@ -215,7 +227,7 @@ const Payment: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> 
     </div>
   );
 };

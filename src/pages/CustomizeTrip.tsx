@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Check } from 'lucide-react';
 
 const CustomizeTrip: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { flight, passengers, bookingData } = location.state || {};
+  const { flight, passengers, passengerDetails, searchData, totalPrice, purchaseId, purchase } = location.state || {};
 
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
@@ -48,6 +48,45 @@ const CustomizeTrip: React.FC = () => {
     }
   ];
 
+  // Nuevo: parseo seguro y búsqueda de precio en estructuras comunes
+  const parsePrice = (val: any): number => {
+    if (typeof val === 'number' && !isNaN(val)) return val;
+    if (typeof val === 'string') {
+      const digits = val.replace(/[^\d]/g, '');
+      return digits ? Number(digits) : 0;
+    }
+    if (val == null) return 0;
+    if (typeof val === 'object') {
+      // Campos comunes donde puede venir el precio
+      const keys = ['price', 'fare', 'totalPrice', 'total', 'amount', 'precio', 'valor', 'cost'];
+      for (const k of keys) {
+        if (k in val) {
+          const parsed = parsePrice((val as any)[k]);
+          if (parsed) return parsed;
+        }
+      }
+      // buscar primer número disponible en las propiedades del objeto
+      for (const k of Object.keys(val)) {
+        const v = (val as any)[k];
+        if (typeof v === 'number' && !isNaN(v)) return v;
+        if (typeof v === 'string' && /\d/.test(v)) {
+          const parsed = parsePrice(v);
+          if (parsed) return parsed;
+        }
+      }
+    }
+    return 0;
+  };
+
+  // intentar extraer precio del objeto flight, o usar totalPrice si viene separado
+  const flightPrice = parsePrice(flight ?? totalPrice ?? 0);
+
+  // debug: muestra lo que llega en location.state para verificar estructura
+  useEffect(() => {
+    console.debug('CustomizeTrip location.state:', location.state);
+    console.debug('Parsed flightPrice:', flightPrice);
+  }, [location.state, flightPrice]);
+
   const toggleService = (serviceId: string) => {
     setSelectedServices(prev => 
       prev.includes(serviceId) 
@@ -71,7 +110,11 @@ const CustomizeTrip: React.FC = () => {
       state: {
         flight,
         passengers,
-        bookingData,
+        passengerDetails,
+        searchData,
+        totalPrice,
+        purchaseId,
+        purchase,
         selectedServices: customizedServices
       }
     });
@@ -145,7 +188,7 @@ const CustomizeTrip: React.FC = () => {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Vuelo:</span>
                   <span className="font-semibold">
-                    ${flight?.price.toLocaleString()} COP
+                    ${ flightPrice.toLocaleString() } COP
                   </span>
                 </div>
                 
@@ -170,7 +213,7 @@ const CustomizeTrip: React.FC = () => {
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total:</span>
                     <span className="text-sky-500">
-                      ${((flight?.price || 0) + getTotalServices()).toLocaleString()} COP
+                      ${(flightPrice + getTotalServices()).toLocaleString()} COP
                     </span>
                   </div>
                 </div>
@@ -178,8 +221,8 @@ const CustomizeTrip: React.FC = () => {
               
               <div className="mt-6 text-sm text-gray-500">
                 <p className="font-medium mb-2">Pasajero:</p>
-                <p>{bookingData?.firstName} {bookingData?.lastName}</p>
-                <p>{bookingData?.email}</p>
+                <p>{passengerDetails?.[0]?.firstName} {passengerDetails?.[0]?.lastName}</p>
+                <p>{passengerDetails?.[0]?.email}</p>
               </div>
             </div>
           </div>
