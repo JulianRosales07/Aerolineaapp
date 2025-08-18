@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Calendar, Star } from 'lucide-react';
+import {  Calendar, Star } from 'lucide-react';
 
 const Offers: React.FC = () => {
   const featuredOffers = [
