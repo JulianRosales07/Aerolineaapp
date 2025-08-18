@@ -17,13 +17,11 @@ const Payment: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const calculateTotal = () => {
-    const flightPrice = passedTotalPrice || (flight?.precio ? parseFloat(flight.precio) : 0);
-    const servicesPrice = Array.isArray(selectedServices)
-      ? selectedServices.reduce((total: number, service: any) => total + (Number(service?.price) || 0), 0)
-      : 0;
-    const seatPrice = (typeof selectedSeat === 'string' && /^[123]/.test(selectedSeat)) ? 50000 : 0;
-
-    return (passedTotalPrice || flightPrice) + servicesPrice + seatPrice;
+    const flightPrice = flight?.price || 0;
+    const servicesPrice = selectedServices?.reduce((total: number, service: any) => total + (service?.price || 0), 0) || 0;
+    const seatPrice = (selectedSeat?.startsWith('1') || selectedSeat?.startsWith('2') || selectedSeat?.startsWith('3')) ? 50000 : 0;
+    
+    return flightPrice + servicesPrice + seatPrice;
   };
 
   const handlePayment = async () => {
@@ -173,21 +171,15 @@ const Payment: React.FC = () => {
               <div className="space-y-4">
                 <div className="pb-4 border-b">
                   <h4 className="font-semibold mb-2">Detalles del Vuelo</h4>
-                  <p className="text-sm text-gray-600">{flight?.origen || flight?.origin || 'N/A'} → {flight?.destino || flight?.destination || 'N/A'}</p>
-                  <p className="text-sm text-gray-600">
-                    {flight?.fecha_salida ? new Date(flight.fecha_salida).toLocaleDateString() : (flight?.departureDate ?? 'N/A')}
-                    {' - '}
-                    {flight?.fecha_salida ? new Date(flight.fecha_salida).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : (flight?.departureTime ?? 'N/A')}
-                  </p>
-                  <p className="text-sm text-gray-600">Asiento: {selectedSeat ?? 'N/A'}</p>
+                  <p className="text-sm text-gray-600">{flight?.origin} → {flight?.destination}</p>
+                  <p className="text-sm text-gray-600">{flight?.departureDate} - {flight?.departureTime}</p>
+                  <p className="text-sm text-gray-600">Asiento: {selectedSeat}</p>
                 </div>
 
                 <div className="pb-4 border-b">
                   <h4 className="font-semibold mb-2">Pasajero</h4>
-                  <p className="text-sm text-gray-600">
-                    {passengerDetails?.[0]?.firstName ?? ''} {passengerDetails?.[0]?.lastName ?? ''}
-                  </p>
-                  <p className="text-sm text-gray-600">{passengerDetails?.[0]?.email ?? ''}</p>
+                  <p className="text-sm text-gray-600">{bookingData?.firstName} {bookingData?.lastName}</p>
+                  <p className="text-sm text-gray-600">{bookingData?.email}</p>
                 </div>
 
                 <div className="space-y-2">
